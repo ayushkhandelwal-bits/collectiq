@@ -1,0 +1,41 @@
+source_table,source_column,standardized_column,dtype,unit_valid_range,missing_rate,provenance,role,available_at_prediction_time,transformation,permitted_in_deployed_pipeline,direct_model_feature
+loan_accounts,loan_id,loan_id,str,LN#######,0.0,SYNTHETIC,identifier,yes,none,yes,False
+loan_accounts,customer_id,customer_id,str,CU#######,0.0,SYNTHETIC,identifier,yes,none (fictional),yes,False
+loan_accounts,loan_product,loan_product,str,category,0.0,SYNTHETIC,feature,yes,one-hot,yes,True
+loan_accounts,loan_purpose,loan_purpose,str,category,0.0,SYNTHETIC,reporting,yes,none,yes,False
+loan_accounts,region,region,str,category,0.0,SYNTHETIC,reporting / fairness,yes,excluded from models by policy,no,False
+loan_accounts,risk_grade,risk_grade,str,A-E,0.0,SYNTHETIC,feature,yes,one-hot,yes,True
+loan_accounts,bureau_score,bureau_score,float64,300-900,0.0,SYNTHETIC,feature,yes,median impute,yes,True
+loan_accounts,loan_amount,loan_amount,float64,INR > 0,0.0,SYNTHETIC,feature,yes,log,yes,False
+loan_accounts,annual_income,annual_income,float64,INR > 0,0.0,SYNTHETIC,feature,yes,log,yes,False
+loan_accounts,employment_length_years,employment_length_years,float64,0-35 years,0.03968,SYNTHETIC,feature,yes,median impute + missing indicator,yes,True
+loan_accounts,debt_to_income_ratio,debt_to_income_ratio,float64,fraction 0-0.85,0.0,SYNTHETIC,feature,yes,none,yes,True
+loan_accounts,payment_to_income_ratio,payment_to_income_ratio,float64,fraction 0-0.45,0.0,SYNTHETIC,feature,yes,none,yes,True
+loan_accounts,interest_rate,interest_rate,float64,% p.a. 9.5-34,0.0,SYNTHETIC,feature,yes,none,yes,True
+loan_accounts,loan_term_months,loan_term_months,Int64,6-60,0.0,SYNTHETIC,feature,yes,none,yes,True
+loan_accounts,emi_amount,emi_amount,float64,INR > 0,0.0,SYNTHETIC,feature,yes,log,yes,False
+loan_accounts,credit_history_length_months,credit_history_length_months,Int64,6-360,0.0,SYNTHETIC,feature,yes,none,yes,True
+loan_accounts,credit_utilization_ratio,credit_utilization_ratio,float64,fraction 0-1,0.0,SYNTHETIC,feature,yes,none,yes,True
+loan_accounts,prior_delinquency_count,prior_delinquency_count,Int64,>= 0,0.0,SYNTHETIC,feature,yes,none,yes,True
+loan_accounts,open_credit_accounts,open_credit_accounts,Int64,>= 1,0.0,SYNTHETIC,feature,yes,none,yes,True
+loan_accounts,revolving_balance,revolving_balance,float64,INR >= 0,0.0,SYNTHETIC,reporting,yes,none,yes,False
+loan_accounts,origination_date,origination_date,string,date,0.0,SYNTHETIC,reporting / feature source,yes,months on book,yes,False
+loan_accounts,loan_status,loan_status,str,category,0.0,SYNTHETIC,outcome (as-of),NO,never a feature,no,False
+loan_accounts,current_outstanding_principal,current_outstanding_principal,float64,INR,0.0,SYNTHETIC,outcome (as-of),NO,never a feature,no,False
+loan_accounts,charged_off_principal,charged_off_principal,float64,INR,0.9508,SYNTHETIC,outcome,NO,never a feature,no,False
+loan_accounts,final_recovery_amount,final_recovery_amount,float64,INR,0.9508,SYNTHETIC,outcome,NO,never a feature,no,False
+loan_accounts,contact_restriction,contact_restriction,str,category,0.99402,SYNTHETIC,policy / eligibility,yes,eligibility rule only,yes,False
+repayment_snapshots,days_past_due,days_past_due,Int64,>= 0,0.0,SYNTHETIC,feature (at t),yes,none,yes,True
+repayment_snapshots,delinquency_bucket,delinquency_bucket,str,category,0.0,SYNTHETIC,feature (at t) / target (t+1..3),at t only,ordinal; future values form the Model A target,yes,False
+repayment_snapshots,missed_payment_indicator,missed_payment_indicator,Int64,0/1,0.0,SYNTHETIC,feature source,yes,rolling 3m/6m sums,yes,False
+repayment_snapshots,payment_received,payment_received,float64,INR,0.0,SYNTHETIC,feature source,yes (<= t),3m payment ratio; months since last payment,yes,False
+repayment_snapshots,scheduled_payment,scheduled_payment,float64,INR,0.0,SYNTHETIC,feature source,yes,ratio,yes,False
+repayment_snapshots,outstanding_principal,outstanding_principal,float64,INR,0.0,SYNTHETIC,feature (at t),yes,ratio to original; log,yes,False
+collection_events,action_type,action_type,str,category,0.0,SYNTHETIC,feature (decision),yes,one-hot,yes,True
+collection_events,attempt_number,attempt_number,Int64,>= 1,0.0,SYNTHETIC,feature,yes,none,yes,False
+collection_events,delinquency_stage_at_event,delinquency_stage_at_event,str,category,0.0,SYNTHETIC,feature,yes,one-hot,yes,False
+collection_events,estimated_action_cost,estimated_action_cost,float64,INR >= 0,0.0,SYNTHETIC,cost input,yes,none,yes,False
+collection_events,contact_outcome,contact_outcome,str,category,0.0,SYNTHETIC,post-action,NO,never a feature,no,False
+collection_events,promise_to_pay_indicator,promise_to_pay_indicator,Int64,0/1,0.0,SYNTHETIC,post-action / history,only prior closed windows,prior PTP count,no,False
+collection_events,promise_fulfilled_indicator,promise_fulfilled_indicator,Int64,0/1,0.9094572552531422,SYNTHETIC,outcome / history,only prior closed windows,prior fulfilment rate,no,False
+collection_events,subsequent_payment_amount,subsequent_payment_amount,float64,INR >= 0,0.0,SYNTHETIC,"target (Models B, C)",NO,binary target and log1p amount target,no,False

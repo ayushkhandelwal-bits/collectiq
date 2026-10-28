@@ -1,0 +1,252 @@
+{
+  "seed": 42,
+  "n_loans": 50000,
+  "generation_version": "synthetic-v1.1",
+  "dataset_name": "collectiq_synthetic_v1",
+  "as_of_date": "2026-06-30",
+  "start_month": "2023-01",
+  "last_origination_month": "2026-03",
+  "charge_off_missed_installments": 6,
+  "recovery_window_months": 36,
+  "currency": "INR",
+  "products": {
+    "Personal Loan": {
+      "share": 0.38,
+      "median_amount": 300000,
+      "amount_sigma": 0.55,
+      "min_amount": 50000,
+      "max_amount": 2500000,
+      "terms": [
+        12,
+        24,
+        36,
+        48,
+        60
+      ],
+      "term_p": [
+        0.1,
+        0.25,
+        0.35,
+        0.18,
+        0.12
+      ],
+      "base_rate": 12.5,
+      "risk_effect": 0.1,
+      "purposes": [
+        "Debt consolidation",
+        "Medical",
+        "Home improvement",
+        "Wedding",
+        "Education",
+        "Travel",
+        "Other"
+      ],
+      "purpose_p": [
+        0.32,
+        0.12,
+        0.16,
+        0.12,
+        0.1,
+        0.08,
+        0.1
+      ]
+    },
+    "Two-Wheeler Loan": {
+      "share": 0.22,
+      "median_amount": 95000,
+      "amount_sigma": 0.3,
+      "min_amount": 30000,
+      "max_amount": 300000,
+      "terms": [
+        12,
+        18,
+        24,
+        36
+      ],
+      "term_p": [
+        0.2,
+        0.25,
+        0.35,
+        0.2
+      ],
+      "base_rate": 11.0,
+      "risk_effect": 0.25,
+      "purposes": [
+        "Vehicle purchase"
+      ],
+      "purpose_p": [
+        1.0
+      ]
+    },
+    "Consumer Durable Loan": {
+      "share": 0.15,
+      "median_amount": 45000,
+      "amount_sigma": 0.45,
+      "min_amount": 8000,
+      "max_amount": 250000,
+      "terms": [
+        6,
+        9,
+        12
+      ],
+      "term_p": [
+        0.35,
+        0.3,
+        0.35
+      ],
+      "base_rate": 14.0,
+      "risk_effect": 0.2,
+      "purposes": [
+        "Electronics & appliances"
+      ],
+      "purpose_p": [
+        1.0
+      ]
+    },
+    "Business Loan": {
+      "share": 0.12,
+      "median_amount": 900000,
+      "amount_sigma": 0.6,
+      "min_amount": 150000,
+      "max_amount": 5000000,
+      "terms": [
+        24,
+        36,
+        48,
+        60
+      ],
+      "term_p": [
+        0.2,
+        0.35,
+        0.25,
+        0.2
+      ],
+      "base_rate": 15.0,
+      "risk_effect": 0.3,
+      "purposes": [
+        "Working capital",
+        "Equipment purchase",
+        "Business expansion"
+      ],
+      "purpose_p": [
+        0.5,
+        0.25,
+        0.25
+      ]
+    },
+    "Used Car Loan": {
+      "share": 0.13,
+      "median_amount": 450000,
+      "amount_sigma": 0.4,
+      "min_amount": 100000,
+      "max_amount": 1800000,
+      "terms": [
+        24,
+        36,
+        48,
+        60
+      ],
+      "term_p": [
+        0.15,
+        0.35,
+        0.3,
+        0.2
+      ],
+      "base_rate": 12.0,
+      "risk_effect": 0.0,
+      "purposes": [
+        "Vehicle purchase"
+      ],
+      "purpose_p": [
+        1.0
+      ]
+    }
+  },
+  "regions": {
+    "North": 0.27,
+    "West": 0.26,
+    "South": 0.27,
+    "East": 0.12,
+    "Central": 0.08
+  },
+  "grade_shares": {
+    "A": 0.2,
+    "B": 0.3,
+    "C": 0.25,
+    "D": 0.15,
+    "E": 0.1
+  },
+  "grade_rate_spread": {
+    "A": 0.0,
+    "B": 2.0,
+    "C": 4.0,
+    "D": 6.5,
+    "E": 9.5
+  },
+  "historical_policy": {
+    "1-29 DPD": {
+      "Reminder notification": 0.6,
+      "Outbound call": 0.4
+    },
+    "30-59 DPD": {
+      "Reminder notification": 0.15,
+      "Outbound call": 0.45,
+      "Follow-up call": 0.2,
+      "Payment-plan review": 0.2
+    },
+    "60-89 DPD": {
+      "Follow-up call": 0.35,
+      "Payment-plan review": 0.35,
+      "Specialist review": 0.3
+    },
+    "90+ DPD": {
+      "Follow-up call": 0.3,
+      "Payment-plan review": 0.35,
+      "Specialist review": 0.35
+    },
+    "Charged Off": {
+      "Payment-plan review": 0.5,
+      "Specialist review": 0.5
+    }
+  },
+  "event_probability": {
+    "1-29 DPD": 0.85,
+    "30-59 DPD": 0.9,
+    "60-89 DPD": 0.9,
+    "90+ DPD": 0.9,
+    "Charged Off": 0.55
+  },
+  "action_uplift_logit": {
+    "Reminder notification": {
+      "cure": 0.25,
+      "partial": 0.05,
+      "recovery": 0.0
+    },
+    "Outbound call": {
+      "cure": 0.4,
+      "partial": 0.15,
+      "recovery": 0.0
+    },
+    "Follow-up call": {
+      "cure": 0.3,
+      "partial": 0.2,
+      "recovery": 0.0
+    },
+    "Payment-plan review": {
+      "cure": 0.1,
+      "partial": 0.65,
+      "recovery": 0.45
+    },
+    "Specialist review": {
+      "cure": 0.55,
+      "partial": 0.35,
+      "recovery": 0.75
+    }
+  },
+  "contact_restrictions": {
+    "Dispute under review": 0.015,
+    "Hardship assessment hold": 0.025,
+    "Do-not-call request": 0.015
+  },
+  "mechanism": "Deterministic synthetic lending-portfolio generator for CollectIQ.\n\nThe generator simulates a consumer-lending book month by month so that every\ntable is internally consistent:\n\n* ``loans``       - one row per loan with origination attributes and as-of outcomes\n* ``snapshots``   - one row per loan per month-end (repayment / delinquency history)\n* ``events``      - one row per simulated collection action, with its 30-day outcome\n\nMechanism (all parameters are documented in ``GENERATION_PARAMETERS``):\n\n1. Borrower and loan attributes are drawn from skewed, correlated distributions.\n2. A latent credit-risk index ``z`` combines observable attributes with a hidden\n   component, so outcomes are stochastic and not a copy of any single feature.\n3. Each month an account that is current may miss its instalment (logistic hazard\n   driven by ``z``, loan age, seasonality and a macro stress factor) or prepay.\n4. A delinquent account is worked by a *historical* collection policy that picks an\n   action at random conditional on the delinquency stage only. The month's\n   outcome (cure / partial payment / further miss) depends on ``z``, stage, the\n   action and whether a promise to pay was obtained.\n5. After 6 consecutive missed instalments the account is charged off; recoveries\n   on the charged-off balance are then simulated, capped at the balance.\n\nAll values are synthetic. Currency convention: Indian Rupees (INR)."
+}

@@ -1,0 +1,83 @@
+{
+  "dataset_name": "collectiq_synthetic_v1",
+  "source_type": "synthetic",
+  "data_mode": "SYNTHETIC",
+  "primary_source": {
+    "name": "LendingClub loan data (Kaggle competition \"lending-club\")",
+    "url": "https://www.kaggle.com/c/lending-club/data",
+    "probe": {
+      "source_name": "LendingClub loan data (Kaggle competition \"lending-club\")",
+      "source_url": "https://www.kaggle.com/c/lending-club/data",
+      "checked_at": "2026-10-28T05:40:01+00:00",
+      "network_reachable": false,
+      "network_detail": "URLError: <urlopen error Tunnel connection failed: 403 Forbidden>",
+      "credentials_available": false,
+      "client_installed": false,
+      "usable": false,
+      "decision": "SYNTHETIC_FALLBACK: source not reachable (URLError: <urlopen error Tunnel connection failed: 403 Forbidden>); no authorised Kaggle API credentials in environment; Kaggle API client not installed"
+    },
+    "used": false,
+    "reason_not_used": "SYNTHETIC_FALLBACK: source not reachable (URLError: <urlopen error Tunnel connection failed: 403 Forbidden>); no authorised Kaggle API credentials in environment; Kaggle API client not installed"
+  },
+  "acquisition_method": "Deterministic simulation (src/data_generation/generate_data.py)",
+  "retrieval_or_generation_date": "2026-10-28T05:40:48+00:00",
+  "file_location": "data/synthetic/collectiq_synthetic_v1_synthetic-v1.1_n50000_seed42",
+  "files": [
+    {
+      "file": "events.parquet",
+      "sha256": "54bf0a958ee8810e13d89dbab30286806b0eff715aee87d81bb777ff4cebcacb",
+      "size_bytes": 1048242
+    },
+    {
+      "file": "loans.parquet",
+      "sha256": "7f1bd77ecf068abaffa61a36bc9c0b75e2469323282adb17e7170022515e1df0",
+      "size_bytes": 2802809
+    },
+    {
+      "file": "snapshots.parquet",
+      "sha256": "4cb8b9a3fe8b48f9b72cc378b311f20aaec2789641295805288c6a1aa4c15e31",
+      "size_bytes": 15278505
+    }
+  ],
+  "combined_checksum": "97bc9e8bcc23e8386519283f03e853b805565ea9d18e9f3f35b261aa8c5d7789",
+  "dataset_version": "b96544ef2277e4e7",
+  "profile": "full",
+  "record_counts": {
+    "loan_accounts": 50000,
+    "repayment_snapshots": 754266,
+    "collection_events": 62534,
+    "recovery_outcomes": 62534,
+    "portfolio_snapshots": 5910
+  },
+  "column_counts": {
+    "loan_accounts": 34,
+    "repayment_snapshots": 12,
+    "collection_events": 18,
+    "recovery_outcomes": 12,
+    "portfolio_snapshots": 12
+  },
+  "license_or_terms": "Synthetic data generated for this project; free to use and redistribute. No real customer data.",
+  "generation": {
+    "seed": 42,
+    "version": "synthetic-v1.1",
+    "n_loans": 50000,
+    "as_of_date": "2026-06-30",
+    "method": "Month-by-month simulation with latent risk index, logistic hazards, stage-conditional historical collection policy and capped recoveries. Parameters in generation_parameters.json."
+  },
+  "currency": "INR (synthetic)",
+  "transformation_history": [
+    "generate -> data/synthetic/<dataset>/ (raw, immutable)",
+    "standardize names/types -> data/staging/",
+    "derive recovery_outcomes (event windows) and portfolio_snapshots (aggregates)",
+    "data-quality gate (critical failures block loading and training)",
+    "load SQLite in one transaction (delete + insert, idempotent)",
+    "feature engineering -> data/processed/"
+  ],
+  "known_limitations": [
+    "All records are synthetic; no PUBLIC observations are present.",
+    "Collection-event outcomes are simulated and are not evidence of real-world collection effectiveness.",
+    "Historical collection actions were assigned at random within delinquency stage; real-world action assignment is usually non-random (confounded).",
+    "Payment timing within a month is not simulated; each month has at most one collection event per account and the month's cash is attributed to it.",
+    "Macro stress and seasonality are stylised assumptions."
+  ]
+}
