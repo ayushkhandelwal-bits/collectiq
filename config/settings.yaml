@@ -1,0 +1,132 @@
+# CollectIQ configuration. All monetary values are synthetic Indian Rupees (INR).
+app:
+  name: CollectIQ
+  tagline: Collections Intelligence & Recovery Optimization
+  version: 1.0.0
+  currency_code: INR
+  currency_symbol: "₹"
+
+paths:
+  raw_dir: data/raw
+  staging_dir: data/staging
+  processed_dir: data/processed
+  synthetic_dir: data/synthetic
+  metadata_dir: data/metadata
+  database: data/processed/collectiq.db
+  artifacts_dir: models/artifacts
+  reports_dir: reports/summaries
+  figures_dir: reports/figures
+
+source:
+  primary_name: LendingClub loan data (Kaggle competition "lending-club")
+  primary_url: https://www.kaggle.com/c/lending-club/data
+  probe_timeout_seconds: 8
+
+# Data-generation profiles. "full" is used locally; "demo" is a lighter profile
+# used for cloud bootstrap (selected with the COLLECTIQ_PROFILE env variable).
+profiles:
+  full:
+    n_loans: 50000
+  demo:
+    n_loans: 20000
+  test:
+    n_loans: 3000
+
+generation:
+  seed: 42
+  version: synthetic-v1.1
+  dataset_name: collectiq_synthetic_v1
+  start_month: "2023-01"          # first origination month
+  last_origination_month: "2026-03"
+  as_of_date: "2026-06-30"        # reporting / planning date of the simulated book
+  charge_off_missed_installments: 6
+  recovery_window_months: 36
+
+modeling:
+  random_seed: 42
+  risk_model:
+    horizon_months: 3
+    train_end: "2025-03-31"
+    valid_end: "2025-09-30"
+    test_end: "2026-03-31"        # as_of minus horizon
+    snapshot_sample_fraction: 1.0
+    # Business assumption for threshold choice: a missed serious delinquency costs
+    # 5x an unnecessary early-intervention contact.
+    cost_false_negative: 5.0
+    cost_false_positive: 1.0
+  recovery_model:
+    train_end: "2025-06-30"
+    valid_end: "2025-12-31"
+    test_end: "2026-06-30"
+  xgboost:
+    n_estimators: 300
+    max_depth: 4
+    learning_rate: 0.05
+    subsample: 0.8
+    colsample_bytree: 0.8
+    min_child_weight: 5
+  shap_sample_size: 1500
+
+collections:
+  planning_period_days: 7
+  cooling_off_days: 7              # minimum days since last contact before a new contact
+  max_contacts_30d: 3
+  recovery_window_months: 36       # charged-off accounts older than this are not worked
+  restricted_states:               # contact-restriction values that block all contact
+    - Dispute under review
+    - Hardship assessment hold
+  digital_only_states:             # restriction values that allow only automated reminders
+    - Do-not-call request
+  actions:
+    Reminder notification:
+      channel: SMS
+      cost: 15
+      agent_hours: 0.0
+      capacity_category: Automated
+      stages: ["1-29 DPD", "30-59 DPD"]
+    Outbound call:
+      channel: Phone
+      cost: 120
+      agent_hours: 0.25
+      capacity_category: Standard queue
+      stages: ["1-29 DPD", "30-59 DPD"]
+    Follow-up call:
+      channel: Phone
+      cost: 100
+      agent_hours: 0.2
+      capacity_category: Standard queue
+      stages: ["30-59 DPD", "60-89 DPD", "90+ DPD"]
+    Payment-plan review:
+      channel: Phone
+      cost: 450
+      agent_hours: 0.75
+      capacity_category: Senior queue
+      stages: ["30-59 DPD", "60-89 DPD", "90+ DPD", "Charged Off"]
+    Specialist review:
+      channel: Phone
+      cost: 1200
+      agent_hours: 1.5
+      capacity_category: Specialist desk
+      stages: ["60-89 DPD", "90+ DPD", "Charged Off"]
+  default_action_by_stage:         # used by the simple baseline strategies
+    "1-29 DPD": Reminder notification
+    "30-59 DPD": Outbound call
+    "60-89 DPD": Follow-up call
+    "90+ DPD": Follow-up call
+    "Charged Off": Payment-plan review
+
+optimization:
+  default_budget: 400000
+  default_capacity_hours: 600
+  default_action_caps:
+    Reminder notification: 3000
+    Outbound call: 1500
+    Follow-up call: 1500
+    Payment-plan review: 400
+    Specialist review: 120
+  time_limit_seconds: 60
+  mip_rel_gap: 0.0005
+
+priority:
+  high_quantile: 0.80              # top 20% of positive expected net value -> High
+  medium_quantile: 0.50

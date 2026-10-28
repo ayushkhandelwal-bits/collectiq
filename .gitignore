@@ -1,0 +1,28 @@
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.env
+.pytest_cache/
+.ruff_cache/
+
+# Secrets / auth
+.streamlit/secrets.toml
+kaggle.json
+*.pem
+
+# Reproducible data and artifacts (rebuilt by the pipeline)
+data/raw/*
+data/staging/*
+data/processed/*
+data/synthetic/*
+data/metadata/environment.json
+models/artifacts/*
+reports/summaries/*
+reports/figures/*
+!**/.gitkeep
+
+# Logs / OS
+*.log
+.DS_Store
